@@ -1,25 +1,28 @@
-const dados = [{	id: "63fc55e2-22ce-4fda-8209-bd4f3271202a",
-	title: "tarefa 1 intem",
-	description: "Uma tarefa nova para teste",
-	completed_at: null,
-	},
-    {id: "63fc55e2-22ce-4fda-8209-bd4f3271202b",
-	title: "tarefa 1 intem",
-	description: "Uma tarefa nova para teste",
-	completed_at: null,
-	}
-]
+import assert from 'node:assert';
+import { generate } from 'csv-generate';
+import { parse } from 'csv-parse';
 
-const id = "63fc55e2-22ce-4fda-8209-bd4f3271202b";
-
-const index = dados.findIndex(row=> row.id===id);
-
-console.log(index);
-
-const updatedTask = {...dados[index],completed_at:"2024-09-10T09:57:10.120Z"};
-
-console.log(updatedTask);
-
-dados.splice(index,1,updatedTask);
-
-console.log(dados);
+(async () => {
+  // Initialise the parser by generating random records
+  const parser = generate({
+    high_water_mark: 64 * 64,
+    length: 100
+  }).pipe(
+    parse()
+  );
+  // Intialise count
+  let count = 0;
+  // Report start
+  process.stdout.write('start\n');
+  // Iterate through each records
+  for await (const record of parser) {
+    // Report current line
+    process.stdout.write(`${count++} ${record.join(',')}\n`);
+    // Fake asynchronous operation
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  // Report end
+  process.stdout.write('...done\n');
+  // Validation
+  assert.strictEqual(count, 100);
+})();

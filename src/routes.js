@@ -29,14 +29,14 @@ export const routes = [
     method: "POST",
     path: buildRoutePath("/tasks"),
     handler: (req, res) => {
-      const { title, description, completed_at } = req.body;
+      const { title, description} = req.body;
       const data = new Date();
 
       const newTask = {
         id: randomUUID(),
         title,
         description,
-        completed_at,
+        completed_at:null,
         created_at: data,
         updated_at: data,
       };
